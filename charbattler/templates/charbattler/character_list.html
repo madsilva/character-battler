@@ -1,0 +1,15 @@
+{% extends "charbattler/base.html" %}
+
+{% block content %}
+
+<h1>All characters</h1>
+{% if object_list %}
+<ul>
+{% for char in object_list %}
+<li><a href="{% url 'character-detail' char.pk %}">{{ char.name }}</a></li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No characters!</p>
+{% endif %}
+{% endblock %}

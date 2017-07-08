@@ -1,0 +1,12 @@
+{% extends "charbattler/base.html" %}
+
+{% block content %}
+
+<h1>{{ character.name }}</h1>
+<p>{{ character.bio }}</p>
+<ul>
+	<li>Total wins: {{ character.total_wins }}</li>
+	<li>Total losses: {{ character.total_losses }}</li>
+<ul>
+
+{% endblock %}

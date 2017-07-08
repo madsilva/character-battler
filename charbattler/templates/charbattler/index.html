@@ -1,0 +1,19 @@
+{% extends "charbattler/base.html" %}
+
+{% block content %}
+
+<p>welcome to hell</p>
+<form action="{% url 'vote' %}" method="post">
+{% csrf_token %}
+<input type="hidden" name="matchup" value={{ matchup.pk }}>
+{% if mix_up_val == 0 %}
+<button type="submit" name="winner" value={{ matchup.char1.pk }}>{{ matchup.char1.name }}</button>
+<button type="submit" name="winner" value={{ matchup.char2.pk }}>{{ matchup.char2.name }}</button>
+{% else %}
+<button type="submit" name="winner" value={{ matchup.char2.pk }}>{{ matchup.char2.name }}</button>
+<button type="submit" name="winner" value={{ matchup.char1.pk }}>{{ matchup.char1.name }}</button>
+{% endif %}
+</form>
+
+
+{% endblock %}
