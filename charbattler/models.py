@@ -3,6 +3,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 import random
 
+class Origin(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField()
 
 class RandomManager(models.Manager):
     # Returns a random model instance
@@ -12,13 +15,12 @@ class RandomManager(models.Manager):
 
 # TODO: add image file field
 class Character(models.Model):
-
     name = models.CharField(max_length=200)
     bio = models.TextField()
-    origin = models.ForeignKey(Origin)
+    origin = models.ForeignKey(Origin, null=True, blank=True)
     total_wins = models.IntegerField(default=0)
     total_losses = models.IntegerField(default=0)
-    #image = models.ImageField()
+    # image = models.ImageField()
 
     objects = RandomManager()
 
@@ -61,10 +63,6 @@ class Matchup(models.Model):
     def __str__(self):
         return '%s vs. %s' % (self.char1.name, self.char2.name)
 
-
-class Origin(models.Model):
-    name = models.CharField(max_length=200)
-    description = models.TextField()
 
 class Comment(models.Model):
     content = models.TextField()
