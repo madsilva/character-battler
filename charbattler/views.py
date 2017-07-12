@@ -1,7 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.views import generic
+from django.contrib import messages
 from .models import Character, Matchup
 import random
 
@@ -16,6 +17,7 @@ def index(request):
 def vote(request):
     matchup = Matchup.objects.get(pk=request.POST['matchup'])
     matchup.update_wins(request.POST['winner'])
+    messages.add_message(request, messages.INFO, matchup.pk)
     return HttpResponseRedirect(reverse('index'))
 
 

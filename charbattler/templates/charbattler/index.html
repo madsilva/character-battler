@@ -15,5 +15,11 @@
 {% endif %}
 </form>
 
+{% if messages %}
+{% for message in messages %}
+<p><a href="{% url 'matchup-detail' message %}">comment on the last matchup</a></p>
+{% endfor %}
+{% endif %}
+
 
 {% endblock %}
