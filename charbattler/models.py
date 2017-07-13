@@ -7,14 +7,13 @@ import random
 
 
 class Origin(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
     description = models.TextField()
+    #more_info_url = models.URLField()
 
     def __str__(self):
         return self.name
 
-    def get_name_slug(self):
-        return slugify(self.name)
 
 class RandomManager(models.Manager):
     # Returns a random model instance
@@ -28,15 +27,13 @@ def character_image_path(instance, filename):
 # TODO: override validation method
 # TODO: name and origin unique together
 class Character(models.Model):
-    def get_name_slug(self):
-        return slugify(self.name)
 
     # the name of the character, displayed in the battler, in lists, etc.
     name = models.CharField(max_length=200)
     # the original media of the character
     origin = models.ForeignKey(Origin)
     # image to be displayed in the battler, on detail page, etc.
-    # stored with the name "name_origin"
+    # stored as "media/character_images/origin/name.ext"
     image = models.ImageField(upload_to=character_image_path)
 
     # only one of the two fields below is required
@@ -61,7 +58,9 @@ class Character(models.Model):
         return self.name
 
 
-# This function is called every time a Character model is saved
+# This function is called every time a Character model is saved.
+# If the instance is new, it creates Matchup instances with the saved Character and every other Character in the
+# database (except itself).
 @receiver(post_save, sender=Character)
 def create_matchups(sender, instance, created, **kwargs):
     if created:
@@ -90,8 +89,8 @@ class Matchup(models.Model):
             self.char2.total_wins += 1
             self.char2_wins += 1
             self.char1.total_losses += 1
-        self.char1.save()
-        self.char2.save()
+        self.char1.save(update_fields=['total_wins', 'total_losses'])
+        self.char2.save(update_fields=['total_wins', 'total_losses'])
 
     def __str__(self):
         return '%s vs. %s' % (self.char1.name, self.char2.name)

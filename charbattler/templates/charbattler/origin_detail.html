@@ -1,0 +1,12 @@
+{% extends "charbattler/base.html" %}
+
+{% block content %}
+
+<h1>{{ origin.name }}</h1>
+<ul>
+{% for char in origin.character_set.all %}
+	<li>{{ char.name }}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

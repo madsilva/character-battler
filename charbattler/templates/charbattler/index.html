@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<p>welcome to hell</p>
+<h3>Which character would win in a fight?</h3>
 <form action="{% url 'vote' %}" method="post">
 {% csrf_token %}
 <input type="hidden" name="matchup" value={{ matchup.pk }}>

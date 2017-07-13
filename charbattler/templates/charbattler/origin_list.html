@@ -1,0 +1,15 @@
+{% extends "charbattler/base.html" %}
+
+{% block content %}
+
+<h1>All origins</h1>
+{% if object_list %}
+<ul>
+{% for origin in object_list %}
+<li><a href="{% url 'origin-detail' origin.pk %}">{{ origin.name }}</a></li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No origins!</p>
+{% endif %}
+{% endblock %}

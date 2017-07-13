@@ -3,11 +3,10 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.views import generic
 from django.contrib import messages
-from .models import Character, Matchup
+from .models import Character, Matchup, Origin
 import random
 
 
-# Todo: add "comment on last matchup" link
 def index(request):
     matchup = Matchup.objects.random()
     mix_up_val = random.randint(0, 1)
@@ -30,5 +29,15 @@ class CharacterDetailView(generic.DetailView):
     model = Character
 
 
+class OriginListView(generic.ListView):
+    model = Origin
+
+
+class OriginDetailView(generic.DetailView):
+    model = Origin
+
+
 class MatchupDetailView(generic.DetailView):
     model = Matchup
+
+
