@@ -7,17 +7,17 @@
 {% csrf_token %}
 <input type="hidden" name="matchup" value={{ matchup.pk }}>
 {% if mix_up_val == 0 %}
-<button type="submit" name="winner" value={{ matchup.char1.pk }}>{{ matchup.char1.name }}</button>
-<button type="submit" name="winner" value={{ matchup.char2.pk }}>{{ matchup.char2.name }}</button>
+<button type="submit" name="winner" value={{ matchup.char1.pk }}><img src="{{ matchup.char1.image.url }}" style="width:200px;height:228px;">{{ matchup.char1.name }}</button>
+<button type="submit" name="winner" value={{ matchup.char2.pk }}><img src="{{ matchup.char2.image.url }}" style="width:200px;height:228px;">{{ matchup.char2.name }}</button>
 {% else %}
-<button type="submit" name="winner" value={{ matchup.char2.pk }}>{{ matchup.char2.name }}</button>
-<button type="submit" name="winner" value={{ matchup.char1.pk }}>{{ matchup.char1.name }}</button>
+<button type="submit" name="winner" value={{ matchup.char2.pk }}><img src="{{ matchup.char2.image.url }}" style="width:200px;height:228px;">{{ matchup.char2.name }}</button>
+<button type="submit" name="winner" value={{ matchup.char1.pk }}><img src="{{ matchup.char1.image.url }}" style="width:200px;height:228px;">{{ matchup.char1.name }}</button>
 {% endif %}
 </form>
 
 {% if messages %}
 {% for message in messages %}
-<p><a href="{% url 'matchup-detail' message %}">comment on the last matchup</a></p>
+<p><a href="{% url 'matchup-detail' message %}">Comment on the last matchup</a></p>
 {% endfor %}
 {% endif %}
 

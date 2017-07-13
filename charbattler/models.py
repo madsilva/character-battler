@@ -22,7 +22,7 @@ class Character(models.Model):
     origin = models.ForeignKey(Origin, null=True, blank=True)
     total_wins = models.IntegerField(default=0)
     total_losses = models.IntegerField(default=0)
-    #image = models.ImageField(upload_to='character_pictures/')
+    image = models.ImageField(upload_to='character_pictures/', null=True, blank=True)
 
     objects = RandomManager()
 
