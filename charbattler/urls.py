@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^about/$', views.about, name='about'),
     url(r'^vote/$', views.vote, name='vote'),
     url(r'^characters/$', views.CharacterListView.as_view(), name='character-list'),
     url(r'^characters/(?P<pk>[0-9]+)$', views.CharacterDetailView.as_view(), name='character-detail'),

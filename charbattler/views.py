@@ -13,6 +13,10 @@ def index(request):
     return render(request, 'charbattler/index.html', context={'matchup': matchup, 'mix_up_val': mix_up_val})
 
 
+def about(request):
+    return render(request, 'charbattler/about.html')
+
+
 def vote(request):
     matchup = Matchup.objects.get(pk=request.POST['matchup'])
     matchup.update_wins(request.POST['winner'])

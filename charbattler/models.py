@@ -1,57 +1,66 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 import random
 
 
-class Origin(models.Model):
-    name = models.CharField(max_length=200, unique=True)
-    description = models.TextField()
-    #more_info_url = models.URLField()
-
-    def __str__(self):
-        return self.name
-
-
+# honestly not sure if I need this
 class RandomManager(models.Manager):
     # Returns a random model instance
     def random(self):
         return self.all()[random.randint(0, self.all().count() - 1)]
 
+
+# This function returns a path where an Origin instance's image field file will be saved.
+# Paths are: "media/origin_images/origin-name.ext"
+def origin_image_path(instance, filename):
+    ext = filename.split('.')[-1]
+    return 'origin_images/{0}.{1}'.format(slugify(instance.name), ext)
+
+
+# This model represents the original media characters come from; franchises, universes, movies, TV shows, etc.
+class Origin(models.Model):
+    # The name of the original media
+    name = models.CharField(max_length=200, unique=True)
+    # A url linking to more detailed info about the media
+    more_info_url = models.URLField()
+    # An image representing the original media, optional
+    image = models.ImageField(upload_to=origin_image_path, null=True, blank=True)
+    # A brief description of the original media, optional
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+# This function returns a path where a Character instance's image field will be saved.
+# Paths are: "media/character_images/origin-name/character-name.ext"
 def character_image_path(instance, filename):
     ext = filename.split('.')[-1]
     return 'character_images/{0}/{1}.{2}'.format(slugify(instance.origin), slugify(instance.name), ext)
 
-# TODO: override validation method
+
 # TODO: name and origin unique together
 class Character(models.Model):
-
-    # the name of the character, displayed in the battler, in lists, etc.
+    # The name of the character, displayed in the battler, in lists, etc.
     name = models.CharField(max_length=200)
-    # the original media of the character
+    # The original media of the character
     origin = models.ForeignKey(Origin)
-    # image to be displayed in the battler, on detail page, etc.
-    # stored as "media/character_images/origin/name.ext"
+    # Image to be displayed in the battler, on detail page, etc.
     image = models.ImageField(upload_to=character_image_path)
 
-    # only one of the two fields below is required
-    # a short description of the character
+    # Only one of the two fields below is required
+    # A short description of the character
     bio = models.TextField(null=True, blank=True)
-    # a url to an outside page providing more detailed info about the character
+    # A url to an outside page providing more detailed info about the character
     more_info_url = models.URLField(null=True, blank=True)
 
-    # stats for the character
+    # Stats for the character
     total_wins = models.IntegerField(default=0)
     total_losses = models.IntegerField(default=0)
 
     objects = RandomManager()
-
-    # override
-    def clean(self):
-        if self.bio is None and self.more_info_url is None:
-            raise ValidationError('Character must have bio and/or info link.')
 
     # override
     def __str__(self):
