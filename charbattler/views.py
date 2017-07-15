@@ -1,10 +1,12 @@
+import random
+
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.http import HttpResponseRedirect
 from django.views import generic
-from django.contrib import messages
+
 from .models import Character, Matchup, Origin
-import random
 
 
 def index(request):
@@ -48,5 +50,3 @@ class OriginDetailView(generic.DetailView):
 
 class MatchupDetailView(generic.DetailView):
     model = Matchup
-
-

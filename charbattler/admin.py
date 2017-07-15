@@ -1,14 +1,15 @@
-from django.contrib import admin
 from django import forms
+from django.contrib import admin
 from django.core.exceptions import ValidationError
+
 from .models import Character, Matchup, Origin
+
 
 class CharacterForm(forms.ModelForm):
     class Meta:
         model = Character
-        exclude = ['total_losses']
+        exclude = ['total_wins', 'total_losses', 'total_origin_wins', 'total_origin_losses']
 
-    # override
     def clean(self):
         cleaned_data = super().clean()
         bio = cleaned_data.get('bio')
