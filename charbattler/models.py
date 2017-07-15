@@ -6,18 +6,6 @@ from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 
 
-@receiver(post_save, sender='Character')
-def create_matchups(sender, instance, created, **kwargs):
-    # This function is called every time a Character model is saved.
-    # If the instance is new, it creates Matchup instances with the saved Character and every other Character in the
-    # database (except itself).
-    if created:
-        for char in Character.objects.all():
-            if char != instance:
-                match = Matchup(char1=instance, char2=char)
-                match.save()
-
-
 # Todo: look into different options for getting random model instances
 class RandomManager(models.Manager):
     def random(self):
@@ -150,6 +138,18 @@ class Matchup(models.Model):
 
         winner.save(update_fields=['total_wins', 'total_losses'])
         loser.save(update_fields=['total_wins', 'total_losses'])
+
+
+@receiver(post_save, sender=Character)
+def create_matchups(sender, instance, created, **kwargs):
+    # This function is called every time a Character model is saved.
+    # If the instance is new, it creates Matchup instances with the saved Character and every other Character in the
+    # database (except itself).
+    if created:
+        for char in Character.objects.all():
+            if char != instance:
+                match = Matchup(first_character=instance, second_character=char)
+                match.save()
 
 
 # Todo: add documentation
