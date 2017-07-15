@@ -41,7 +41,6 @@ def character_image_path(instance, filename):
     return 'character_images/{0}/{1}.{2}'.format(slugify(instance.origin), slugify(instance.name), ext)
 
 
-# TODO: name and origin unique together
 class Character(models.Model):
     # The name of the character, displayed in the battler, in lists, etc.
     name = models.CharField(max_length=200)
@@ -57,10 +56,17 @@ class Character(models.Model):
     more_info_url = models.URLField(null=True, blank=True)
 
     # Stats for the character
+    # Total wins and losses across all matchups
     total_wins = models.IntegerField(default=0)
     total_losses = models.IntegerField(default=0)
+    # Total wins and losses in matchups with characters from the same origin
+    total_origin_wins = models.IntegerField(default=0)
+    total_origin_losses = models.IntegerField(default=0)
 
     objects = RandomManager()
+
+    class Meta():
+        unique_together = ('name', 'origin')
 
     # override
     def __str__(self):
@@ -89,17 +95,22 @@ class Matchup(models.Model):
 
     objects = RandomManager()
 
-    def update_wins(self, winner):
-        if int(winner) == self.char1.pk:
-            self.char1.total_wins += 1
-            self.char1_wins += 1
-            self.char2.total_losses += 1
+    def update_wins(self, winner_pk):
+        if int(winner_pk) == self.char1.pk:
+            winner = self.char1
+            loser = self.char2
         else:
-            self.char2.total_wins += 1
-            self.char2_wins += 1
-            self.char1.total_losses += 1
-        self.char1.save(update_fields=['total_wins', 'total_losses'])
-        self.char2.save(update_fields=['total_wins', 'total_losses'])
+            winner = self.char2
+            loser = self.char1
+
+        winner.total_wins += 1
+        loser.total_losses += 1
+        if winner.origin == loser.origin:
+            winner.total_origin_wins += 1
+            loser.total_origin_losses += 1
+
+        winner.save(update_fields=['total_wins', 'total_losses'])
+        loser.save(update_fields=['total_wins', 'total_losses'])
 
     def __str__(self):
         return '%s vs. %s' % (self.char1.name, self.char2.name)

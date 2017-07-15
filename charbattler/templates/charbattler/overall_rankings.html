@@ -1,0 +1,9 @@
+{% extends "charbattler/base.html" %}
+
+{% block content %}
+<ul>
+{% for char in top10 %}
+<li>{{ char.name }}</li>
+{% endfor %}
+</ul>
+{% endblock %}
