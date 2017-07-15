@@ -1,3 +1,31 @@
-p {
-    color:red;
+.battle-image-1, .battle-image-2 {
+    border-width: 25px;
+    border-style: solid;
+    border-radius: 25px;
+    width: 500px;
+    height: 500px;
+}
+
+.battle-button {
+    padding: 0px 0px;
+    border: 0px;
+    background-color: white;
+}
+
+.website-title {
+    font-family: "Fugaz One", cursive;
+}
+
+.container {
+    max-width:1300px;
+    background-color: white;
+    background-color: white;
+}
+
+body {
+    background-color: powderblue;
+}
+
+html {
+    background: transparent;
 }
