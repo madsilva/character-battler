@@ -1,25 +1,48 @@
 {% extends "charbattler/base.html" %}
-
 {% block content %}
 
+<script type="text/javascript">
+    $(document).ready(function(){
+        var hexArray = ['#04e762','#c45aa4','#f5b700', '#28a9e0', '#f6f948']
+        var randomColor1 = hexArray[Math.floor(Math.random() * hexArray.length)];
+        var randomColor2 = hexArray[Math.floor(Math.random() * hexArray.length)];
+        while (randomColor1 === randomColor2) {
+            randomColor2 = hexArray[Math.floor(Math.random()) * hexArray.length)]
+        }
+
+        $(".battle-image-1").css("border-color", randomColor1);
+        $(".battle-image-2").css("border-color", randomColor2);
+    });
+</script>
+
 <h3>Which character would win in a fight?</h3>
-<form action="{% url 'vote' %}" method="post">
-{% csrf_token %}
-<input type="hidden" name="matchup" value={{ matchup.pk }}>
-{% if mix_up_val == 0 %}
-<button type="submit" name="winner" value={{ matchup.char1.pk }}><img src="{{ matchup.char1.image.url }}" style="width:200px;height:228px;">{{ matchup.char1.name }}</button>
-<button type="submit" name="winner" value={{ matchup.char2.pk }}><img src="{{ matchup.char2.image.url }}" style="width:200px;height:228px;">{{ matchup.char2.name }}</button>
-{% else %}
-<button type="submit" name="winner" value={{ matchup.char2.pk }}><img src="{{ matchup.char2.image.url }}" style="width:200px;height:228px;">{{ matchup.char2.name }}</button>
-<button type="submit" name="winner" value={{ matchup.char1.pk }}><img src="{{ matchup.char1.image.url }}" style="width:200px;height:228px;">{{ matchup.char1.name }}</button>
-{% endif %}
-</form>
 
-{% if messages %}
-{% for message in messages %}
-<p><a href="{% url 'matchup-detail' message %}">Comment on the last matchup</a></p>
-{% endfor %}
-{% endif %}
+<div class="row">
+    <form action="{% url 'vote' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="matchup" value={{ matchup.pk }}>
+        {% if mix_up_val == 0 %}
+            <div class="col-sm-6">
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.char1.pk }}><img src="{{ matchup.char1.image.url }}" class="battle-image-1">{{ matchup.char1.name }}</button>
+            </div>
+            <div class="col-sm-6">
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.char2.pk }}><img src="{{ matchup.char2.image.url }}" class="battle-image-2">{{ matchup.char2.name }}</button>
+            </div>
+            {% else %}
+            <div class="col-sm-6">
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.char2.pk }}><img src="{{ matchup.char2.image.url }}" class="battle-image-1">{{ matchup.char2.name }}</button>
+            </div>
+            <div class="col-sm-6">
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.char1.pk }}><img src="{{ matchup.char1.image.url }}" class="battle-image-2">{{ matchup.char1.name }}</button>
+            </div>
+        {% endif %}
+    </form>
 
+    {% if messages %}
+    {% for message in messages %}
+    <p><a href="{% url 'matchup-detail' message %}">Comment on the last matchup</a></p>
+    {% endfor %}
+    {% endif %}
+</div>
 
 {% endblock %}
