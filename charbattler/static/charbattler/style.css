@@ -2,8 +2,8 @@
     border-width: 25px;
     border-style: solid;
     border-radius: 25px;
-    width: 500px;
-    height: 500px;
+    width: 400px;
+    height: 400px;
 }
 
 .battle-button {
@@ -14,12 +14,17 @@
 
 .website-title {
     font-family: "Fugaz One", cursive;
+    font-size: 350%;
+    color: #262626;
 }
 
 .container {
     max-width:1300px;
     background-color: white;
     background-color: white;
+    border-width: 10px;
+    border-style: solid;
+
 }
 
 body {

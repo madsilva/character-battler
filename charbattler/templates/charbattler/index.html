@@ -6,6 +6,10 @@
         var hexArray = ['#04e762','#c45aa4','#f5b700', '#28a9e0', '#f6f948']
         var randomColor1 = hexArray[Math.floor(Math.random() * hexArray.length)];
         var randomColor2 = hexArray[Math.floor(Math.random() * hexArray.length)];
+        while (randomColor1 === randomColor2) {
+            randomColor2 = hexArray[Math.floor(Math.random()) * hexArray.length)]
+        }
+
         $(".battle-image-1").css("border-color", randomColor1);
         $(".battle-image-2").css("border-color", randomColor2);
     });
