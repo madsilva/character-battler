@@ -23,17 +23,17 @@
         <input type="hidden" name="matchup" value={{ matchup.pk }}>
         {% if mix_up_val == 0 %}
             <div class="col-sm-6">
-                <button class="battle-button" type="submit" name="winner" value={{ matchup.char1.pk }}><img src="{{ matchup.char1.image.url }}" class="battle-image-1">{{ matchup.char1.name }}</button>
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.first_character.pk }}><img src="{{ matchup.first_character.image.url }}" class="battle-image-1">{{ matchup.first_character.name }}</button>
             </div>
             <div class="col-sm-6">
-                <button class="battle-button" type="submit" name="winner" value={{ matchup.char2.pk }}><img src="{{ matchup.char2.image.url }}" class="battle-image-2">{{ matchup.char2.name }}</button>
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.second_character.pk }}><img src="{{ matchup.second_character.image.url }}" class="battle-image-2">{{ matchup.second_character.name }}</button>
             </div>
             {% else %}
             <div class="col-sm-6">
-                <button class="battle-button" type="submit" name="winner" value={{ matchup.char2.pk }}><img src="{{ matchup.char2.image.url }}" class="battle-image-1">{{ matchup.char2.name }}</button>
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.second_character.pk }}><img src="{{ matchup.second_character.image.url }}" class="battle-image-1">{{ matchup.second_character.name }}</button>
             </div>
             <div class="col-sm-6">
-                <button class="battle-button" type="submit" name="winner" value={{ matchup.char1.pk }}><img src="{{ matchup.char1.image.url }}" class="battle-image-2">{{ matchup.char1.name }}</button>
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.first_character.pk }}><img src="{{ matchup.first_character.image.url }}" class="battle-image-2">{{ matchup.first_character.name }}</button>
             </div>
         {% endif %}
     </form>
