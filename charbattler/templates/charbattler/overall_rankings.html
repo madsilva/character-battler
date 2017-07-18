@@ -1,9 +1,20 @@
 {% extends "charbattler/base.html" %}
 
 {% block content %}
-<ul>
-{% for char in top10 %}
-<li>{{ char.name }}</li>
-{% endfor %}
-</ul>
+<h1>Overall Top 10 Characters</h1>
+<table class="table table-bordered table-condensed table-responsive">
+    <tr>
+        <th>Name</th>
+        <th>Origin</th>
+        <th>Total wins</th>
+    </tr>
+    {% for char in top10 %}
+        <tr>
+            <td><a href="{% url 'character-detail' char.pk %}">{{ char.name }}</a></td>
+            <td><a href="{% url 'origin-detail' char.origin.pk %}">{{ char.origin.name }}</a></td>
+            <td>{{ char.total_wins }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
 {% endblock %}

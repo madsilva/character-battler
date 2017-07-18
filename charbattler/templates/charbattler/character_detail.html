@@ -1,23 +1,37 @@
 {% extends "charbattler/base.html" %}
 
+{% block title %}<title>{{ character.name }} | Character Battler!</title>{% endblock %}
+
 {% block content %}
 
-<h1>{{ character.name }}</h1>
-<p><img src="{{ character.image.url }}"></p>
-<p>Origin: {{ character.origin }}</p>
-{% if character.bio %}
-<p>{{ character.bio }}</p>
-{% else %}
-<p>No bio information avaliable.</p>
-{% endif %}
-{% if character.more_info_url %}
-<p>More info on this character: <a href="{{ character.more_info_url }}">{{ character.more_info_url }}</a></p>
-{% else %}
-<p>No external info link found.</p>
-{% endif %}
-<ul>
-	<li>Total wins: {{ character.total_wins }}</li>
-	<li>Total losses: {{ character.total_losses }}</li>
-</ul>
+<div class="row">
+	<div class="col-sm-12 center-block text-center">
+		<h1>{{ character.name }}</h1>
+		<p><img src="{{ character.image.url }}"></p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-12">
+		<p>Origin: <a href="{% url 'origin-detail' character.origin.pk %}">{{ character.origin }}</a></p>
+		Obscurity rating <a href="{% url 'rating-system' %}">(?)</a>: {{ character.obscurity_rating }} ({{ character.get_obscurity_rating_display }})</p>
+		{% if character.bio %}
+		<p>{{ character.bio }}</p>
+		{% else %}
+		<p>No bio information avaliable.</p>
+		{% endif %}
+		{% if character.more_info_url %}
+		<p>More info on this character: <a href="{{ character.more_info_url }}">{{ character.more_info_url }}</a></p>
+		{% else %}
+		<p>No external info link found.</p>
+		{% endif %}
+		Character stats:
+		<ul>
+			<li>Total wins: {{ character.total_wins }}</li>
+			<li>Total losses: {{ character.total_losses }}</li>
+			<li>Wins within origin group: {{character.total_origin_wins}}</li>
+			<li>Losses within origin group: {{character.total_origin_losses}}</li>
+		</ul>
+	</div>
+</div>
 
 {% endblock %}

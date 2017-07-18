@@ -33,7 +33,7 @@ def vote(request):
 
 
 def overall_rankings(request):
-    top10 = Character.objects.order_by('total_wins')[:10]
+    top10 = Character.objects.order_by('-total_wins')[:10]
     return render(request, 'charbattler/overall_rankings.html', context={'top10': top10})
 
 
