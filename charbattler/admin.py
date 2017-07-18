@@ -22,6 +22,9 @@ class CharacterForm(forms.ModelForm):
 @admin.register(Character)
 class CharacterAdmin(admin.ModelAdmin):
     form = CharacterForm
+    list_display = ('name', 'isHidden', 'obscurity_rating')
+    list_editable = ('isHidden', 'obscurity_rating')
+    readonly_fields = ('total_wins', 'total_losses')
 
 admin.site.register(Matchup)
 admin.site.register(Origin)

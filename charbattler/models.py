@@ -8,9 +8,11 @@ from django.template.defaultfilters import slugify
 
 # Todo: look into different options for getting random model instances
 class RandomManager(models.Manager):
-    def random(self):
+    def random(self, qs=None):
         """Return a random model instance."""
-        return self.all()[random.randint(0, self.all().count() - 1)]
+        if qs is None:
+            return self.all()[random.randint(0, self.all().count() - 1)]
+        return qs.all()[random.randint(0, qs.all().count() - 1)]
 
 
 def origin_image_path(instance, filename):
@@ -64,6 +66,10 @@ class Character(models.Model):
         The two fields below must be unique together:
         name: The name of the character, displayed in the battler, in lists, etc.
         origin: An Origin instance representing the original media the Character is from
+        obscurity_rating: A number choice from 0-3 representing how well known the Character is. A more detailed explanation
+        can be found in templates/charbattler/obscurity_rating_system.html
+        isHidden: Boolean value that determines whether the Character will be displayed in the battler or on the character list.
+        If True, it will be, if False, it won't.
 
         image: Image to be displayed in the battler, on detail page, etc.
 
@@ -80,6 +86,10 @@ class Character(models.Model):
 
     name = models.CharField(max_length=200)
     origin = models.ForeignKey(Origin)
+    obscurity_choices = (
+        (0, 'Universal'), (1, 'Known to outsiders'), (2, 'Known to insiders'), (3, 'Very obscure'),)
+    obscurity_rating = models.IntegerField(choices=obscurity_choices)
+    isHidden = models.BooleanField(default=False)
 
     image = models.ImageField(upload_to=character_image_path)
 
@@ -117,10 +127,14 @@ class Matchup(models.Model):
     first_character_wins = models.IntegerField(default=0)
     second_character_wins = models.IntegerField(default=0)
 
+    obscurity_rating = models.IntegerField()
     objects = RandomManager()
 
     def __str__(self):
         return '{} vs. {}'.format(self.first_character.name, self.second_character.name)
+
+    def get_obscurity(self):
+        return max(self.first_character.obscurity_rating, self.second_character.obscurity_rating)
 
     def update_wins(self, winner_pk):
         if int(winner_pk) == self.first_character.pk:
@@ -148,7 +162,8 @@ def create_matchups(sender, instance, created, **kwargs):
     if created:
         for char in Character.objects.all():
             if char != instance:
-                match = Matchup(first_character=instance, second_character=char)
+                obscurity_rating = max(instance.obscurity_rating, char.obscurity_rating)
+                match = Matchup(first_character=instance, second_character=char, obscurity_rating=obscurity_rating)
                 match.save()
 
 
