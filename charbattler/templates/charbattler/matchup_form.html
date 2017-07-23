@@ -1,0 +1,39 @@
+<form action="{% url 'vote' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="matchup" value={{ matchup.pk }}>
+        <input type="hidden" name="redirect" value={{ redirect_val }}>
+
+        {% if mix_up_val == 0 %}
+            <div class="col-sm-6 center-block text-center">
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.first_character.pk }}><img src="{{ matchup.first_character.image.url }}" class="battle-image-1"></button>
+                <br />
+                <a href="{% url 'character-detail' matchup.first_character.pk %}">{{ matchup.first_character.name }}</a>
+                <br />
+                <a href="{% url 'origin-detail' matchup.first_character.origin.pk %}">{{ matchup.first_character.origin.name }}</a>
+            </div>
+            <div class="col-sm-6 center-block text-center">
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.second_character.pk }}><img src="{{ matchup.second_character.image.url }}" class="battle-image-2"></button>
+                <br />
+                <a href="{% url 'character-detail' matchup.second_character.pk %}">{{ matchup.second_character.name }}</a>
+                <br />
+                <a href="{% url 'origin-detail' matchup.second_character.origin.pk %}">{{ matchup.second_character.origin.name }}</a>
+            </div>
+
+            {% else %}
+            <div class="col-sm-6 center-block text-center">
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.second_character.pk }}><img src="{{ matchup.second_character.image.url }}" class="battle-image-1"></button>
+                <br />
+                <a href="{% url 'character-detail' matchup.second_character.pk %}">{{ matchup.second_character.name }}</a>
+                <br />
+                <a href="{% url 'origin-detail' matchup.second_character.origin.pk %}">{{ matchup.second_character.origin.name }}</a>
+            </div>
+            <div class="col-sm-6 center-block text-center">
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.first_character.pk }}><img src="{{ matchup.first_character.image.url }}" class="battle-image-2"></button>
+                <br />
+                <a href="{% url 'character-detail' matchup.first_character.pk %}">{{ matchup.first_character.name }}</a>
+                <br />
+                <a href="{% url 'origin-detail' matchup.first_character.origin.pk %}">{{ matchup.first_character.origin.name }}</a>
+            </div>
+        {% endif %}
+
+    </form>
