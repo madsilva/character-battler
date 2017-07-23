@@ -122,8 +122,8 @@ class Matchup(models.Model):
         second_character_wins: The number of times second_character has won against first_character.
     """
 
-    first_character = models.ForeignKey(Character, related_name='first_character')
-    second_character = models.ForeignKey(Character, related_name='second_character')
+    first_character = models.ForeignKey(Character, related_name='first_character', on_delete=models.CASCADE)
+    second_character = models.ForeignKey(Character, related_name='second_character', on_delete=models.CASCADE)
     first_character_wins = models.IntegerField(default=0)
     second_character_wins = models.IntegerField(default=0)
 
@@ -132,6 +132,10 @@ class Matchup(models.Model):
 
     def __str__(self):
         return '{} vs. {}'.format(self.first_character.name, self.second_character.name)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.obscurity_rating = self.get_obscurity()
 
     def get_obscurity(self):
         return max(self.first_character.obscurity_rating, self.second_character.obscurity_rating)

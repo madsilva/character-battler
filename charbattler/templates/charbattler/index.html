@@ -1,35 +1,64 @@
 {% extends "charbattler/base.html" %}
 {% block content %}
 
-<h3>Which character would win in a fight?</h3>
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <h3>Which character would win in a fight?</h3>
+    </div>
+</div>
+
 
 <div class="row">
 
     <form action="{% url 'vote' %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="matchup" value={{ matchup.pk }}>
+
         {% if mix_up_val == 0 %}
-            <div class="col-sm-6">
-                <button class="battle-button" type="submit" name="winner" value={{ matchup.first_character.pk }}><img src="{{ matchup.first_character.image.url }}" class="battle-image-1">{{ matchup.first_character.name }}</button>
+            <div class="col-sm-6 center-block text-center">
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.first_character.pk }}><img src="{{ matchup.first_character.image.url }}" class="battle-image-1"></button>
+                <br />
+                <a href="{% url 'character-detail' matchup.first_character.pk %}">{{ matchup.first_character.name }}</a>
+                <br />
+                <a href="{% url 'origin-detail' matchup.first_character.origin.pk %}">{{ matchup.first_character.origin.name }}</a>
             </div>
-            <div class="col-sm-6">
-                <button class="battle-button" type="submit" name="winner" value={{ matchup.second_character.pk }}><img src="{{ matchup.second_character.image.url }}" class="battle-image-2">{{ matchup.second_character.name }}</button>
+            <div class="col-sm-6 center-block text-center">
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.second_character.pk }}><img src="{{ matchup.second_character.image.url }}" class="battle-image-2"></button>
+                <br />
+                <a href="{% url 'character-detail' matchup.second_character.pk %}">{{ matchup.second_character.name }}</a>
+                <br />
+                <a href="{% url 'origin-detail' matchup.second_character.origin.pk %}">{{ matchup.second_character.origin.name }}</a>
             </div>
+
             {% else %}
-            <div class="col-sm-6">
-                <button class="battle-button" type="submit" name="winner" value={{ matchup.second_character.pk }}><img src="{{ matchup.second_character.image.url }}" class="battle-image-1">{{ matchup.second_character.name }}</button>
+            <div class="col-sm-6 center-block text-center">
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.second_character.pk }}><img src="{{ matchup.second_character.image.url }}" class="battle-image-1"></button>
+                <br />
+                <a href="{% url 'character-detail' matchup.second_character.pk %}">{{ matchup.second_character.name }}</a>
+                <br />
+                <a href="{% url 'origin-detail' matchup.second_character.origin.pk %}">{{ matchup.second_character.origin.name }}</a>
             </div>
-            <div class="col-sm-6">
-                <button class="battle-button" type="submit" name="winner" value={{ matchup.first_character.pk }}><img src="{{ matchup.first_character.image.url }}" class="battle-image-2">{{ matchup.first_character.name }}</button>
+            <div class="col-sm-6 center-block text-center">
+                <button class="battle-button" type="submit" name="winner" value={{ matchup.first_character.pk }}><img src="{{ matchup.first_character.image.url }}" class="battle-image-2"></button>
+                <br />
+                <a href="{% url 'character-detail' matchup.first_character.pk %}">{{ matchup.first_character.name }}</a>
+                <br />
+                <a href="{% url 'origin-detail' matchup.first_character.origin.pk %}">{{ matchup.first_character.origin.name }}</a>
             </div>
         {% endif %}
+
     </form>
 
-    {% if messages %}
-    {% for message in messages %}
-    <p><a href="{% url 'matchup-detail' message %}">Comment on the last matchup</a></p>
-    {% endfor %}
-    {% endif %}
+
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        {% if messages %}
+        {% for message in messages %}
+        <p><a href="{% url 'matchup-detail' message %}">Comment on the last matchup</a></p>
+        {% endfor %}
+        {% endif %}
+    </div>
 </div>
 
 {% endblock %}

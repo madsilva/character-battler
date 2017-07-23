@@ -12,17 +12,9 @@ from .models import Character, Matchup, Origin
 def index(request):
     origin = Origin.objects.get(name='Real Life')
     #matchup = Matchup.objects.random(Matchup.objects.filter(first_character__origin=origin))
-    matchup = Matchup.objects.random(Matchup.objects.filter(first_character__isHidden=False, second_character__isHidden=False))
+    matchup = Matchup.objects.random(Matchup.objects.filter(obscurity_rating__lte=1, first_character__isHidden=False, second_character__isHidden=False))
     mix_up_val = random.randint(0, 1)
     return render(request, 'charbattler/index.html', context={'matchup': matchup, 'mix_up_val': mix_up_val})
-
-
-def about(request):
-    return render(request, 'charbattler/about.html')
-
-
-def rating_system(request):
-    return render(request, 'charbattler/obscurity_rating_system.html')
 
 
 def vote(request):
