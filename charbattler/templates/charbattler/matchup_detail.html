@@ -1,7 +1,23 @@
 {% extends "charbattler/base.html" %}
-
-
 {% block content %}
-<h1>{{ matchup }}</h1>
+
+<div class="row">
+    <div class="col-sm-6 text-center">
+        <h1><a href="{% url 'character-detail' matchup.first_character.pk %}">{{ matchup.first_character.name }}</a></h1>
+        <br/>
+        <img class="battle-image-1"  src="{{ matchup.first_character.image.url }}">
+        <br/>
+        <p>Wins: {{ matchup.first_character_wins }}</p>
+    </div>
+
+    <div class="col-sm-6 text-center">
+        <h1><a href="{% url 'character-detail' matchup.second_character.pk %}">{{ matchup.second_character.name }}</a></h1>
+        <br/>
+        <img class="battle-image-1" src="{{ matchup.second_character.image.url }}">
+        <br/>
+        <p>Wins: {{ matchup.second_character_wins }}</p>
+    </div>
+
+</div>
 
 {% endblock %}
