@@ -1,6 +1,6 @@
 {% extends "charbattler/base.html" %}
-
 {% block content %}
+
 <h1>Overall Top 10 Characters</h1>
 <table class="table table-bordered table-condensed table-responsive">
     <tr>
@@ -8,7 +8,7 @@
         <th>Origin</th>
         <th>Total wins</th>
     </tr>
-    {% for char in top10 %}
+    {% for char in object_list %}
         <tr>
             <td><a href="{% url 'character-detail' char.pk %}">{{ char.name }}</a></td>
             <td><a href="{% url 'origin-detail' char.origin.pk %}">{{ char.origin.name }}</a></td>
