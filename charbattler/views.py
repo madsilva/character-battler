@@ -13,9 +13,18 @@ def index(request):
     base_matchup = Matchup.objects.filter(first_character__isHidden=False,
                                           second_character__isHidden=False)
     #base_matchup = Matchup.objects.filter(obscurity_rating__lte=1, first_character__isHidden=False, second_character__isHidden=False)
-    if 'action' in request.GET:
-        origin = Origin.objects.get(pk=request.GET['origin'])
+
+    if 'clear-session' in request.POST:
+        request.session.flush()
+
+    if 'action' in request.POST:
+        origin = Origin.objects.get(pk=request.POST['origin'])
+        request.session['origin'] = request.POST['origin']
         matchup = Matchup.objects.random(base_matchup.filter(first_character__origin=origin, second_character__origin=origin))
+    elif 'origin' in request.session:
+        origin = Origin.objects.get(pk=request.session['origin'])
+        matchup = Matchup.objects.random(
+            base_matchup.filter(first_character__origin=origin, second_character__origin=origin))
     else:
         matchup = Matchup.objects.random(base_matchup)
     custom_form = CustomBattleForm()
@@ -33,7 +42,7 @@ def vote(request):
     '''
     matchup = Matchup.objects.get(pk=request.POST['matchup'])
     matchup.update_wins(request.POST['winner'])
-    messages.add_message(request, messages.INFO, matchup.pk)
+    messages.add_message(request, messages.INFO, matchup.pk, extra_tags='comment_on_last_matchup')
     return redirect(request.POST['redirect_url'])
 
 

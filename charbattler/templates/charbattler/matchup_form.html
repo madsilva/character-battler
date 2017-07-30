@@ -1,3 +1,10 @@
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <h3>Which character would win in a fight?</h3>
+    </div>
+</div>
+
+<div class="row">
 <form action="{% url 'vote' %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="matchup" value={{ matchup.pk }}>
@@ -35,5 +42,18 @@
                 <a href="{% url 'origin-detail' matchup.first_character.origin.pk %}">{{ matchup.first_character.origin.name }}</a>
             </div>
         {% endif %}
-
     </form>
+</div>
+<div class="row">
+{% if messages %}
+    {% for message in messages %}
+        {% if message.extra_tags == 'comment_on_last_matchup' %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <p><a href="{% url 'matchup-detail' message %}">Comment on the last matchup</a></p>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+    </div>

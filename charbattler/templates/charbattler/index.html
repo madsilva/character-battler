@@ -1,32 +1,20 @@
 {% extends "charbattler/base.html" %}
 {% block content %}
 
-<div class="row">
-    <div class="col-sm-12 text-center">
-        <h3>Which character would win in a fight?</h3>
-    </div>
-</div>
-
-<div class="row">
-    {% include "charbattler/matchup_form.html" with matchup=matchup redirect_val=request.path %}
-</div>
+{% include "charbattler/matchup_form.html" with matchup=matchup redirect_val='index' %}
 
 <div class="row">
     <div class="col-sm-12">
-        {% if messages %}
-            {% for message in messages %}
-            <p><a href="{% url 'matchup-detail' message %}">Comment on the last matchup</a></p>
-            {% endfor %}
-        {% endif %}
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-sm-12">
-        <form action="" method="get">
+        <form action="" method="post">
+            {% csrf_token %}
             <input type="hidden" name="action" value="form_submit">
             {{ custom_form.as_table }}
             <button type="submit">Submit</button>
+        </form>
+        <form action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="clear-session" value="true">
+            <button type="submit">Clear options</button>
         </form>
     </div>
 </div>
