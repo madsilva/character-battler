@@ -1,17 +1,27 @@
 {% extends "charbattler/base.html" %}
-
 {% block content %}
 
-<h1>{{ origin.name }}</h1>
+{% block title %}<title>{{ origin.name }} | Character Battler!</title>{% endblock %}
+
+<div class="row">
+	<div class="col-sm-12 text-center">
+		<h1>{{ origin.name }}</h1>
+
 {% if origin.image %}
-<img scr="{{ origin.image.url }}">
+	<img src="{{ origin.image.url }}">
 {% endif %}
+	</div>
+</div>
+
+
 {% if origin.description %}
-<p>{{ origin.description }}</p>
+	<p>{{ origin.description }}</p>
 {% else %}
-<p>No description avaliable.</p>
+	<p>No description avaliable.</p>
 {% endif %}
-<p>More info: <a href="{{ origin.more_info_url }}">{{ origin.more_info_url }}</a></p>
+
+<p>More info: <a href="{{ origin.more_info_url }}" target="_blank">{{ origin.more_info_url }}</a></p>
+
 <p>Characters from this universe:</p>
 <ul>
 {% for char in origin.character_set.all %}

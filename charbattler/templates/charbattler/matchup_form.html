@@ -1,7 +1,7 @@
 <form action="{% url 'vote' %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="matchup" value={{ matchup.pk }}>
-        <input type="hidden" name="redirect" value={{ redirect_val }}>
+        <input type="hidden" name="redirect_url" value={{ redirect_val }}>
 
         {% if mix_up_val == 0 %}
             <div class="col-sm-6 center-block text-center">
