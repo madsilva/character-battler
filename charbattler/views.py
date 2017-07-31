@@ -9,13 +9,14 @@ from django.views import generic
 from .models import Character, Matchup, Origin
 from .forms import CustomBattleForm, OriginOptionsForm
 
+
 def index(request):
     base_matchup = Matchup.objects.filter(first_character__isHidden=False, second_character__isHidden=False)
 
-    origin_form_set = formset_factory(OriginOptionsForm, extra=2)
-    formset = origin_form_set()
-    custom_battle_form = CustomBattleForm()
+    origin_options_form_set = formset_factory(OriginOptionsForm, extra=3)
 
+    formset = origin_options_form_set()
+    custom_battle_form = CustomBattleForm()
     if request.method == 'POST':
         if 'clear-session' in request.POST:
             # if the user has clicked the "Clear options" button, the session is reset and all custom parameters go away.
@@ -23,7 +24,7 @@ def index(request):
             matchup = Matchup.objects.random(base_matchup)
         elif 'action' in request.POST:
             # if the user has submitted the custom battle options form, those options must be processed.
-            formset = origin_form_set(request.POST)
+            formset = origin_options_form_set(request.POST)
             custom_battle_form = CustomBattleForm(request.POST)
             if custom_battle_form.is_valid() and formset.is_valid():
                 request.session['include_same_origin_matchups'] = custom_battle_form.cleaned_data['include_same_origin_matchups']
@@ -35,14 +36,19 @@ def index(request):
     if 'origins' in request.session:
         # if the user has custom battle options stored in their session, a matchup is produced that fits those options
         q = Q()
-        for pk in request.session['origins']:
-            origin = Origin.objects.get(pk=pk)
-            if 'include_same_origin_matchups' in request.session and request.session['include_same_origin_matchups'] == True:
 
-                q.add((Q(first_character__origin=origin) & Q(second_character__origin=origin)), q.OR)
-            for other in request.session['origins']:
-                q.add((Q(first_character__origin=origin) & Q(second_character__origin=other)), q.OR)
-                q.add((Q(first_character__origin=other) & Q(second_character__origin=origin)), q.OR)
+        for origin_pk in request.session['origins']:
+            origin = Origin.objects.get(pk=origin_pk)
+
+            if request.session['include_same_origin_matchups'] is True:
+                 q.add(Q(first_character__origin=origin, second_character__origin=origin), q.OR)
+
+            for other_pk in request.session['origins']:
+                other_origin = Origin.objects.get(pk=other_pk)
+                if other_origin.pk != origin.pk:
+                    q.add(Q(first_character__origin=origin, second_character__origin=other_origin), q.OR)
+                    q.add(Q(first_character__origin=other_origin, second_character__origin=origin), q.OR)
+
         matchup = Matchup.objects.random(base_matchup.filter(q))
     else:
         matchup = Matchup.objects.random(base_matchup)
