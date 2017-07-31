@@ -3,12 +3,15 @@
 
 {% include "charbattler/matchup_form.html" with matchup=matchup redirect_val='index' %}
 
+
+
 <div class="row">
     <div class="col-sm-12">
         <form action="" method="post">
             {% csrf_token %}
             <input type="hidden" name="action" value="form_submit">
-            {{ custom_form.as_table }}
+            {{ custom_battle_form }}
+            {{ origin_options_form }}
             <button type="submit">Submit</button>
         </form>
         <form action="" method="post">
@@ -16,6 +19,7 @@
             <input type="hidden" name="clear-session" value="true">
             <button type="submit">Clear options</button>
         </form>
+
     </div>
 </div>
 

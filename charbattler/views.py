@@ -1,36 +1,54 @@
 import random
 
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.db.models import Q
+from django.forms import formset_factory
 from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.views import generic
 
 from .models import Character, Matchup, Origin
-from .forms import CustomBattleForm
+from .forms import CustomBattleForm, OriginOptionsForm
 
 def index(request):
-    base_matchup = Matchup.objects.filter(first_character__isHidden=False,
-                                          second_character__isHidden=False)
-    #base_matchup = Matchup.objects.filter(obscurity_rating__lte=1, first_character__isHidden=False, second_character__isHidden=False)
+    base_matchup = Matchup.objects.filter(first_character__isHidden=False, second_character__isHidden=False)
 
-    if 'clear-session' in request.POST:
-        request.session.flush()
+    origin_form_set = formset_factory(OriginOptionsForm, extra=2)
+    formset = origin_form_set()
+    custom_battle_form = CustomBattleForm()
 
-    if 'action' in request.POST:
-        origin = Origin.objects.get(pk=request.POST['origin'])
-        request.session['origin'] = request.POST['origin']
-        matchup = Matchup.objects.random(base_matchup.filter(first_character__origin=origin, second_character__origin=origin))
-    elif 'origin' in request.session:
-        origin = Origin.objects.get(pk=request.session['origin'])
-        matchup = Matchup.objects.random(
-            base_matchup.filter(first_character__origin=origin, second_character__origin=origin))
+    if request.method == 'POST':
+        if 'clear-session' in request.POST:
+            # if the user has clicked the "Clear options" button, the session is reset and all custom parameters go away.
+            request.session.flush()
+            matchup = Matchup.objects.random(base_matchup)
+        elif 'action' in request.POST:
+            # if the user has submitted the custom battle options form, those options must be processed.
+            formset = origin_form_set(request.POST)
+            custom_battle_form = CustomBattleForm(request.POST)
+            if custom_battle_form.is_valid() and formset.is_valid():
+                request.session['include_same_origin_matchups'] = custom_battle_form.cleaned_data['include_same_origin_matchups']
+                request.session['origins'] = []
+                for origin_form in formset:
+                    origin_pk = origin_form.cleaned_data.get('origin')
+                    request.session['origins'].append(origin_pk.pk)
+
+    if 'origins' in request.session:
+        # if the user has custom battle options stored in their session, a matchup is produced that fits those options
+        q = Q()
+        for pk in request.session['origins']:
+            origin = Origin.objects.get(pk=pk)
+            if 'include_same_origin_matchups' in request.session and request.session['include_same_origin_matchups'] == True:
+
+                q.add((Q(first_character__origin=origin) & Q(second_character__origin=origin)), q.OR)
+            for other in request.session['origins']:
+                q.add((Q(first_character__origin=origin) & Q(second_character__origin=other)), q.OR)
+                q.add((Q(first_character__origin=other) & Q(second_character__origin=origin)), q.OR)
+        matchup = Matchup.objects.random(base_matchup.filter(q))
     else:
         matchup = Matchup.objects.random(base_matchup)
-    custom_form = CustomBattleForm()
 
     mix_up_val = random.randint(0, 1)
-    return render(request, 'charbattler/index.html', context={'matchup': matchup, 'mix_up_val': mix_up_val, 'custom_form': custom_form})
+    return render(request, 'charbattler/index.html', context={'matchup': matchup, 'mix_up_val': mix_up_val, 'origin_options_form': formset, 'custom_battle_form': custom_battle_form})
 
 
 def vote(request):
